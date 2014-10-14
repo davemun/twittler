@@ -1,17 +1,49 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="styles.css">
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
   </head>
   <body>
+	<h1 align="center">Dave's Tweet Reader</h1>
+	
+	<div class="boxed" id="tweetWindow">
+	</div>
+	
+	<div class="boxed" class="tweetSettings">
+
+		<div id="tweetSettingsRefresh" style="width: 300px; display: table-cell;">
+		<p>
+			<label for="refreshLabel">Refresh Rate (sec)</label>
+		</p>
+		<p>
+			<input id="refreshRate" value="1" type="number">
+		</p>
+		</div>
+
+		<div id="tweetSettingsDisplay" style="width: 300px; display: table-cell;">
+		<p>
+			<label for="displayLabel">Max Tweets to Display</label>
+		</p>
+		<p>
+			<input id="displayCount" value="10" type="number">
+		</p>
+		</div>
+	
+	
+	</div>
+	
+
+	
+  
     <script>
 
       $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
-		var tweetDisplayLimit = 10;
-		var refreshRate = 1000;
+        var $body = $('#tweetWindow');
+        //$body.html('');
+		var tweetDisplayLimit = $("#displayCount").val();
+		var refreshRate = $("#refreshRate").val()*1000;
 		var currentLastTweet = Math.max(0, streams.home.length - 1 - tweetDisplayLimit);
 		var currentFirstTweet = (currentLastTweet + tweetDisplayLimit - 1);
 		var nextFirstTweet, nextLastTweet;
@@ -30,6 +62,12 @@
 			  $tweet.text('@' + tweet.user + ': ' + tweet.message);
 			  $tweet.addClass('tweet');
 			  $tweet.appendTo($body);
+			  
+			  var $tweetDate = $('<div></div>');
+			  $tweetDate.text('..............' + tweet.created_at);
+			  $tweetDate.addClass('tweetDate');
+			  $tweetDate.appendTo($body.find('.tweet').last())
+			  
 			  index -= 1;
 			};
 		//TWEET AUTO DISPLAYER
@@ -57,13 +95,28 @@
 		};
 		
 		
+		//Tweet Reader Settings
+		//Refresh Rate
+		$('#refreshRate').on('keyup', function(){
+			refreshRate = $(this).val()*1000;
+		});
+		/*
+		//Display Amounts
+		$('#displayCount').on('keyup', function(){
+			tweetDisplayLimit = $(this).val();
+			while($body.find('.tweet').length !== tweetDisplayLimit){
+				$body.find('.tweet').last().remove();
+			};
+		});
+		*/
+		
 
 		
 		//DEBUG SECTION
 		//========================
 		//alert($body.find('.tweet').last().created_at);
 		//============================
-		
+		//off by one error somewhere in the amt of tweets to display
 		
 		//INITIAL TWEET DISPLAY
 		displayTweets();
