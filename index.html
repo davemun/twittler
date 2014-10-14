@@ -45,8 +45,8 @@
 			  var $tweet = $('<div></div>');
 			  $tweet.text('@' + tweet.user + ': ' + tweet.message);
 			  $tweet.addClass('tweet');
-			  $tweet.appendTo($body);
-			  //$body.find('.tweet').last().remove();
+			  $tweet.prependTo($body);
+			  $body.find('.tweet').last().remove();
 			  numNewTweets -= 1;
 			};
 		currentFirstTweet = nextFirstTweet;
