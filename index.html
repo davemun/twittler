@@ -16,44 +16,54 @@
 		var currentFirstTweet = (currentLastTweet + tweetDisplayLimit - 1);
 		var nextFirstTweet, nextLastTweet;
 		
+		var scheduleDisplayTweets = function() {
+			//displayTweets(); //deprecated into an initial displayer and then a less expensive new-only itemized updater - updateTweets();
+			updateTweets();
+			setTimeout(scheduleDisplayTweets, refreshRate);
+		};
+		
 		var displayTweets = function() {
 			var index = currentFirstTweet;
 			while(index > currentLastTweet){
 			  var tweet = streams.home[index];
 			  var $tweet = $('<div></div>');
 			  $tweet.text('@' + tweet.user + ': ' + tweet.message);
+			  $tweet.addClass('tweet');
 			  $tweet.appendTo($body);
 			  index -= 1;
-			}
+			};
+		//TWEET AUTO DISPLAYER
+		scheduleDisplayTweets();
 		};
 		
 		var updateTweets = function() {
-			var index = currentFirstTweet;
-			while(index > currentLastTweet){
-			  var tweet = streams.home[index];
+			nextFirstTweet = streams.home.length - 1;
+			nextLastTweet = nextFirstTweet - tweetDisplayLimit + 1;
+			var numNewTweets = nextFirstTweet - currentFirstTweet - 1;
+			while(numNewTweets >= 0){
+			  var tweet = streams.home[nextFirstTweet - numNewTweets];
 			  var $tweet = $('<div></div>');
 			  $tweet.text('@' + tweet.user + ': ' + tweet.message);
+			  $tweet.addClass('tweet');
 			  $tweet.appendTo($body);
-			  index -= 1;
-			}
+			  //$body.find('.tweet').last().remove();
+			  numNewTweets -= 1;
+			};
+		currentFirstTweet = nextFirstTweet;
 		};
 		
-		var scheduleDisplayTweets = function() {
-			displayTweets(); //deprecated into an initial displayer and then a less expensive new-only itemized updater - updateTweets();
-			//updateTweets();
-			setTimeout(scheduleDisplayTweets, refreshRate);
-		};
+		
+
 		
 		//DEBUG SECTION
 		//========================
-		//alert(currentFirstTweet);
+		//alert($body.find('.tweet').last().text());
 		//============================
 		
 		
 		//INITIAL TWEET DISPLAY
-		//displayTweets();
-		//TWEET AUTO DISPLAYER
-		scheduleDisplayTweets();
+		displayTweets();
+
 		
       });
 
