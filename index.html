@@ -36,6 +36,16 @@
 	
 	</div>
 	
+	<a href="#userStreamModal">Debug: Force Open Modal</a>
+	<div id="userStreamModal" class="modalDialog">
+		<div>
+			<a href="#close" title="Close" class="close">X</a>
+			<h2 class="userTweetsTitle">Tweets from</h2>
+			<p>Display tweets div here.</p>
+			<p>Tweeterinos.</p>
+		</div>
+	</div>
+	
 
 	
   
@@ -48,7 +58,7 @@
 		var refreshRate = $("#refreshRate").val()*1000;
 		var currentFirstTweet = (streams.home.length - 1);
 		var currentLastTweet = Math.max(0, currentFirstTweet - tweetDisplayLimit);
-		var nextFirstTweet;
+		var nextFirstTweet, modalUser;
 		
 		var scheduleDisplayTweets = function() {
 			updateTweets();
@@ -60,13 +70,23 @@
 			var index = currentFirstTweet;
 			while(index >= currentLastTweet){
 			  var tweet = streams.home[index];
+			  
 			  var $tweet = $('<div></div>');
-			  $tweet.text('@' + tweet.user + ': ' + tweet.message);
+			  var $tweetUser = $('<div></div>');
+			  
+			  $tweet.text(tweet.message);
+			  $tweetUser.text('@' + tweet.user + ':');
+			  
 			  $tweet.addClass('tweet');
-			  $tweet.appendTo($body);
+			  $tweetUser.addClass('tweetUser');
+			  $tweetUser.data("username", tweet.user);
+			  
+			  $tweetUser.appendTo($body);
+			  $tweet.appendTo($body.find('.tweetUser').last());
+
 			  
 			  var $tweetDate = $('<div></div>');
-			  $tweetDate.text('..............' + tweet.created_at);
+			  $tweetDate.text(tweet.created_at);
 			  $tweetDate.addClass('tweetDate');
 			  $tweetDate.appendTo($body.find('.tweet').last())
 			  
@@ -82,17 +102,39 @@
 			var numNewTweets = nextFirstTweet - currentFirstTweet - 1;
 			while(numNewTweets >= 0){
 			  var tweet = streams.home[nextFirstTweet - numNewTweets];
+			  
 			  var $tweet = $('<div></div>');
-			  $tweet.text('@' + tweet.user + ': ' + tweet.message);
+			  var $tweetUser = $('<div></div>');
+			  
+			  $tweet.text(tweet.message);
+			  $tweetUser.text('@' + tweet.user + ':');
+			  
 			  $tweet.addClass('tweet');
-			  $tweet.prependTo($body);
+			  $tweetUser.addClass('tweetUser');
+			  $tweetUser.data("username", tweet.user);
+			  
+
+			  $tweetUser.prependTo($body);
+			  $tweet.appendTo($body.find('.tweetUser').first());
+			  
 			  var $tweetDate = $('<div></div>');
-			  $tweetDate.text('..............' + tweet.created_at);
+			  $tweetDate.text(tweet.created_at);
 			  $tweetDate.addClass('tweetDate');
 			  $tweetDate.appendTo($body.find('.tweet').first())
+			  
 			  $body.find('.tweet').last().remove();
+			  $body.find('.tweetUser').last().remove();
 			  numNewTweets -= 1;
 			};
+			
+		//User Stream Modal Behavior
+		//attach event handler to new tweets every time they're created
+		$('.tweetUser').on('click', function(){
+			modalUser = $(this).data("username");
+			alert(modalUser);
+			
+		});
+			
 		currentFirstTweet = nextFirstTweet;
 		};
 		
@@ -117,6 +159,23 @@
 		//INITIAL TWEET DISPLAY
 		displayTweets();
 
+		
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
       });
 
