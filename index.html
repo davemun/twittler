@@ -46,6 +46,10 @@
 			  $tweet.text('@' + tweet.user + ': ' + tweet.message);
 			  $tweet.addClass('tweet');
 			  $tweet.prependTo($body);
+			  var $tweetDate = $('<div></div>');
+			  $tweetDate.text('..............' + tweet.created_at);
+			  $tweetDate.addClass('tweetDate');
+			  $tweetDate.appendTo($body.find('.tweet').first())
 			  $body.find('.tweet').last().remove();
 			  numNewTweets -= 1;
 			};
@@ -57,7 +61,7 @@
 		
 		//DEBUG SECTION
 		//========================
-		//alert($body.find('.tweet').last().text());
+		//alert($body.find('.tweet').last().created_at);
 		//============================
 		
 		
