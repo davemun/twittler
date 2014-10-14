@@ -96,3 +96,27 @@
 }
 
 .close:hover { background: #00d9ff; }
+
+.streamTweetUser {
+  font-family: "Verdana", Times, serif;
+  font-size: 1.2em;
+  
+}
+
+.streamTweetUser:hover {
+  background: #d3d3d3;
+}
+
+.streamTweet {
+  margin-left: 50px;
+  font-family: "Verdana", Times, serif;
+  font-size: 0.85em;
+}
+
+
+.streamTweetDate {
+  font-style:oblique;
+  font-size: 0.7em;
+  color: #737373;
+  margin-left: 75px;
+}

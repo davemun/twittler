@@ -40,9 +40,9 @@
 	<div id="userStreamModal" class="modalDialog">
 		<div>
 			<a href="#close" title="Close" class="close">X</a>
-			<h2 class="userTweetsTitle">Tweets from</h2>
-			<p>Display tweets div here.</p>
-			<p>Tweeterinos.</p>
+			<h2 class="userTweetsTitle"></h2>
+			<div id="userTweetStream">
+			</div>
 		</div>
 	</div>
 	
@@ -129,11 +129,49 @@
 			
 		//User Stream Modal Behavior
 		//attach event handler to new tweets every time they're created
+		//onclick, open user's tweets stream in a modal
 		$('.tweetUser').on('click', function(){
 			modalUser = $(this).data("username");
-			alert(modalUser);
+			$('.userTweetsTitle').text(modalUser + "'s Tweets");
+			window.location.hash="#userStreamModal"; 	
 			
+			var userStream = streams.users[modalUser];
+			var $body = $('#userTweetStream');
+			var lastUserTweet = userStream.length - 1;
+			index = lastUserTweet;
+			//alert([index, lastUserTweet - tweetDisplayLimit]);
+			while(index >= Math.max(0, lastUserTweet - ~~(tweetDisplayLimit/2))){
+			  var tweet = userStream[index];
+			  //alert(userStream[index].message);
+			  
+			  var $tweet = $('<div></div>');
+			  var $tweetUser = $('<div></div>');
+			  
+			  $tweet.text(tweet.message);
+			  $tweetUser.text('@' + tweet.user + ':');
+			  
+			  $tweet.addClass('streamTweet');
+			  $tweetUser.addClass('streamTweetUser');
+			  $tweetUser.data("username", tweet.user);
+			  
+			  $tweetUser.prependTo($body);
+			  $tweet.appendTo($body.find('.streamTweetUser').first());
+
+			  
+			  var $tweetDate = $('<div></div>');
+			  $tweetDate.text(tweet.created_at);
+			  $tweetDate.addClass('streamTweetDate');
+			  $tweetDate.appendTo($body.find('.streamTweet').first());
+			  
+			  index -= 1;
+			};
+				
 		});
+		
+		$('.close').on('click', function(){
+			$('#userTweetStream').empty();
+		});
+		
 			
 		currentFirstTweet = nextFirstTweet;
 		};
