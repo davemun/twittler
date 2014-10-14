@@ -10,16 +10,51 @@
       $(document).ready(function(){
         var $body = $('body');
         $body.html('');
-
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
-        }
-
+		var tweetDisplayLimit = 10;
+		var refreshRate = 1000;
+		var currentLastTweet = Math.max(0, streams.home.length - 1 - tweetDisplayLimit);
+		var currentFirstTweet = (currentLastTweet + tweetDisplayLimit - 1);
+		var nextFirstTweet, nextLastTweet;
+		
+		var displayTweets = function() {
+			var index = currentFirstTweet;
+			while(index > currentLastTweet){
+			  var tweet = streams.home[index];
+			  var $tweet = $('<div></div>');
+			  $tweet.text('@' + tweet.user + ': ' + tweet.message);
+			  $tweet.appendTo($body);
+			  index -= 1;
+			}
+		};
+		
+		var updateTweets = function() {
+			var index = currentFirstTweet;
+			while(index > currentLastTweet){
+			  var tweet = streams.home[index];
+			  var $tweet = $('<div></div>');
+			  $tweet.text('@' + tweet.user + ': ' + tweet.message);
+			  $tweet.appendTo($body);
+			  index -= 1;
+			}
+		};
+		
+		var scheduleDisplayTweets = function() {
+			displayTweets(); //deprecated into an initial displayer and then a less expensive new-only itemized updater - updateTweets();
+			//updateTweets();
+			setTimeout(scheduleDisplayTweets, refreshRate);
+		};
+		
+		//DEBUG SECTION
+		//========================
+		//alert(currentFirstTweet);
+		//============================
+		
+		
+		//INITIAL TWEET DISPLAY
+		//displayTweets();
+		//TWEET AUTO DISPLAYER
+		scheduleDisplayTweets();
+		
       });
 
     </script>
