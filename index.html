@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+	<script src="jquery.timeago.js" type="text/javascript"></script>
   </head>
   <body>
 	<h1 align="center">Dave's Tweet Reader</h1>
@@ -86,7 +87,7 @@
 
 			  
 			  var $tweetDate = $('<div></div>');
-			  $tweetDate.text(tweet.created_at);
+			  $tweetDate.text(jQuery.timeago(tweet.created_at));
 			  $tweetDate.addClass('tweetDate');
 			  $tweetDate.appendTo($body.find('.tweet').last())
 			  
@@ -118,7 +119,7 @@
 			  $tweet.appendTo($body.find('.tweetUser').first());
 			  
 			  var $tweetDate = $('<div></div>');
-			  $tweetDate.text(tweet.created_at);
+			  $tweetDate.text(jQuery.timeago(tweet.created_at));
 			  $tweetDate.addClass('tweetDate');
 			  $tweetDate.appendTo($body.find('.tweet').first())
 			  
@@ -132,17 +133,15 @@
 		//onclick, open user's tweets stream in a modal
 		$('.tweetUser').on('click', function(){
 			modalUser = $(this).data("username");
-			$('.userTweetsTitle').text(modalUser + "'s Tweets");
+			$('.userTweetsTitle').text('@' + modalUser + "'s Twitter Timeline");
 			window.location.hash="#userStreamModal"; 	
 			
 			var userStream = streams.users[modalUser];
 			var $body = $('#userTweetStream');
 			var lastUserTweet = userStream.length - 1;
 			index = lastUserTweet;
-			//alert([index, lastUserTweet - tweetDisplayLimit]);
-			while(index >= Math.max(0, lastUserTweet - ~~(tweetDisplayLimit/2))){
+			while(index >= 0){ //Math.max(0, lastUserTweet - ~~(tweetDisplayLimit/2))){ //now displays ENTIRE timeline at all times;
 			  var tweet = userStream[index];
-			  //alert(userStream[index].message);
 			  
 			  var $tweet = $('<div></div>');
 			  var $tweetUser = $('<div></div>');
@@ -154,14 +153,14 @@
 			  $tweetUser.addClass('streamTweetUser');
 			  $tweetUser.data("username", tweet.user);
 			  
-			  $tweetUser.prependTo($body);
-			  $tweet.appendTo($body.find('.streamTweetUser').first());
+			  $tweetUser.appendTo($body);
+			  $tweet.appendTo($body.find('.streamTweetUser').last());
 
 			  
 			  var $tweetDate = $('<div></div>');
-			  $tweetDate.text(tweet.created_at);
+			  $tweetDate.text(jQuery.timeago(tweet.created_at));
 			  $tweetDate.addClass('streamTweetDate');
-			  $tweetDate.appendTo($body.find('.streamTweet').first());
+			  $tweetDate.appendTo($body.find('.streamTweet').last());
 			  
 			  index -= 1;
 			};
