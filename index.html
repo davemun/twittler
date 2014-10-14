@@ -21,7 +21,8 @@
 			<input id="refreshRate" value="1" type="number">
 		</p>
 		</div>
-
+		
+		<!--
 		<div id="tweetSettingsDisplay" style="width: 300px; display: table-cell;">
 		<p>
 			<label for="displayLabel">Max Tweets to Display</label>
@@ -30,6 +31,7 @@
 			<input id="displayCount" value="10" type="number">
 		</p>
 		</div>
+		-->
 	
 	
 	</div>
@@ -42,21 +44,21 @@
       $(document).ready(function(){
         var $body = $('#tweetWindow');
         //$body.html('');
-		var tweetDisplayLimit = $("#displayCount").val();
+		var tweetDisplayLimit = 9; //$("#displayCount").val()-1;
 		var refreshRate = $("#refreshRate").val()*1000;
-		var currentLastTweet = Math.max(0, streams.home.length - 1 - tweetDisplayLimit);
-		var currentFirstTweet = (currentLastTweet + tweetDisplayLimit - 1);
-		var nextFirstTweet, nextLastTweet;
+		var currentFirstTweet = (streams.home.length - 1);
+		var currentLastTweet = Math.max(0, currentFirstTweet - tweetDisplayLimit);
+		var nextFirstTweet;
 		
 		var scheduleDisplayTweets = function() {
-			//displayTweets(); //deprecated into an initial displayer and then a less expensive new-only itemized updater - updateTweets();
 			updateTweets();
 			setTimeout(scheduleDisplayTweets, refreshRate);
 		};
 		
+		//display initial built up collection of tweets
 		var displayTweets = function() {
 			var index = currentFirstTweet;
-			while(index > currentLastTweet){
+			while(index >= currentLastTweet){
 			  var tweet = streams.home[index];
 			  var $tweet = $('<div></div>');
 			  $tweet.text('@' + tweet.user + ': ' + tweet.message);
@@ -70,13 +72,13 @@
 			  
 			  index -= 1;
 			};
-		//TWEET AUTO DISPLAYER
+		//TWEET AUTO UPDATER
 		scheduleDisplayTweets();
 		};
 		
 		var updateTweets = function() {
 			nextFirstTweet = streams.home.length - 1;
-			nextLastTweet = nextFirstTweet - tweetDisplayLimit + 1;
+			nextLastTweet = nextFirstTweet - tweetDisplayLimit;
 			var numNewTweets = nextFirstTweet - currentFirstTweet - 1;
 			while(numNewTweets >= 0){
 			  var tweet = streams.home[nextFirstTweet - numNewTweets];
@@ -100,23 +102,17 @@
 		$('#refreshRate').on('keyup', function(){
 			refreshRate = $(this).val()*1000;
 		});
+		
 		/*
 		//Display Amounts
 		$('#displayCount').on('keyup', function(){
-			tweetDisplayLimit = $(this).val();
-			while($body.find('.tweet').length !== tweetDisplayLimit){
+			tweetDisplayLimit = Math.max(2, $(this).val() - 1);
+			$(this).val(tweetDisplayLimit);
+			while($body.find('.tweet').length-1 !== tweetDisplayLimit){
 				$body.find('.tweet').last().remove();
 			};
 		});
 		*/
-		
-
-		
-		//DEBUG SECTION
-		//========================
-		//alert($body.find('.tweet').last().created_at);
-		//============================
-		//off by one error somewhere in the amt of tweets to display
 		
 		//INITIAL TWEET DISPLAY
 		displayTweets();
