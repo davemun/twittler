@@ -167,6 +167,13 @@
 				
 		});
 		
+		//on click outside modal
+		$('.modalDialog').on('click', function(){
+			$('#userTweetStream').empty();
+			window.location.hash="#close";
+		});
+		
+		//on click modal close button
 		$('.close').on('click', function(){
 			$('#userTweetStream').empty();
 		});
